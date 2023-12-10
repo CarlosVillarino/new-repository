@@ -322,3 +322,23 @@ def download_file():
     else:
         return render_template('file_not_found.html', filename=dynamic_filename)
 
+@app.route('/detalles/modEscalafon', methods=['POST'])
+def modifEsc():
+    try:
+        escalafon = request.form.get("escalafon")
+        cp = request.form.get("cp_mod")
+        print(request.form)
+        print(escalafon)
+        print(cp)
+        with sqlite3.connect("/Users/carlosvillarino/Desktop/Rufo/new-repository/data/admision.db") as con:
+            cur = con.cursor()
+            query = "UPDATE admision_2023 SET escalafon = ? WHERE CP = ?"
+            cur.execute(query, (escalafon, cp))
+            con.commit()
+            
+    except Exception as e:
+        print(e)
+        
+    return render_template("formExito.html")
+        
+    

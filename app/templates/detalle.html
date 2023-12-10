@@ -22,6 +22,7 @@
                 <form action="modEscalafon" method = "POST">
                     Establezca el Escalafón: <input id="escalafon" name="escalafon" type="text">
                     <input type="submit" value="Actualizar Escalafón" onclick="return comprobarEscalafon()">
+                    <input id="cp_mod" name="cp_mod" type="hidden" value="{{admitido.CP}}">
                 </form>
             {%else%}
                 Escalafón: {{admitido.escalafon}}</br>
