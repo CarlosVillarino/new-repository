@@ -1,14 +1,12 @@
-document.getElementById('telefono').addEventListener('input', function (e) {
+function comprobarTlf(){
     var telefonoWarning = document.getElementById('telefonoWarning');
-    if (!/^[0-9]*$/.test(e.target.value)) {
+    var tlfn = document.getElementById('telefono').value;
+    if (!/^[0-9]*$/.test(tlfn)) {
       telefonoWarning.style.display = 'block';
     } else {
       telefonoWarning.style.display = 'none';
     }
-  });
-
-  document.getElementById('email').addEventListener('input', checkEmails);
-document.getElementById('confirmEmail').addEventListener('input', checkEmails);
+  };
 
 function checkEmails() {
   var email = document.getElementById('email').value;
@@ -68,7 +66,7 @@ function showInput(checkbox) {
         }
       };
     }
-    comprobarSubidaArchivos();
+    return comprobarSubidaArchivos();
   }
 
   function comprobarSubidaArchivos(){
@@ -78,5 +76,7 @@ function showInput(checkbox) {
     }else if(document.getElementById('fotografia').files.length<1){
       alert('Debe adjuntar una fotografía');
       return false;
+    }else{
+      return true;
     }
   }

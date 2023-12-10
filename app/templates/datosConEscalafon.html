@@ -9,20 +9,16 @@
     <body>
         <div id="sombra" class="sombra"></div>
         <div class="content1">
-            <h1>Lista pre-admitidos sin escalafón asignado</h1>
+            
+            <h1>Lista pre-admitidos con escalafón asignado</h1>
             <div style="width:70%">
-                <table id="myTable" class="display">
+                <table id="myTable2" class="display">
                     <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>DNI</th>
-                        <th>Género</th>
-                        <th>CP</th>
-                        <th>Fecha de Nacimiento</th>
-                        <th>Situación servicio</th>
-                        <th>Grado</th>
-                        <th>Equivalencia título</th>
+                        <th>Escalafon</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,12 +29,7 @@
                                 <!-- Adjust the row data based on your table structure -->
                                 <td>{{ row[1] }}</td>
                                 <td>{{ row[2] }}</td>
-                                <td>{{ row[3] }}</td>
-                                <td>{{ row[4] }}</td>
-                                <td>{{ row[5] }}</td>
-                                <td>{{ row[9] }}</td>
-                                <td>{{ row[10] }}</td>
-                                <td>{{ row[12] }}</td>
+                                <td>{{ row[8] }}</td>
                             </tr>
                         {% endfor %}
                         </tr>
@@ -51,7 +42,7 @@
 
         <script>
             $(document).ready(function () {
-                $('#myTable').DataTable({
+                $('#myTable2').DataTable({
                     "language": {
                         url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
                     }

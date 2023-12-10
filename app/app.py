@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, redirect, request, render_template, session, url_for
+from flask import Flask, flash, redirect, request, render_template, send_file, session, url_for
 import sqlite3
 from datetime import datetime
 
@@ -9,13 +9,14 @@ from flask_login import LoginManager, login_user
 
 import json
 from user import User
+from admitido import Admitido
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 app.config['SECRET_KEY'] = 'your_secret_key'
 UPLOAD_FOLDER = 'static/titulos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-UPLOAD_FOLDER2 = 'static/titulos'
+UPLOAD_FOLDER2 = 'static/fotos'
 app.config['UPLOAD_FOLDER2'] = UPLOAD_FOLDER2
 
 login_manager = LoginManager(app)
@@ -35,8 +36,9 @@ def entry_home():
 @app.route("/formulario", endpoint='formulario')
 def entry_form():
     if 'username' in session:
+        persona_validar = Admitido("","","","","","","","","","","","","")
         # User is logged in, you can render the page or redirect as needed
-        return render_template('form.html')
+        return render_template('form.html',persona_validar=persona_validar)
     else:
         # User is not logged in, redirect to the login page
         return redirect(url_for('login'))
@@ -61,11 +63,27 @@ def intro_form():
     grado = request.form["grado"]
     equivalencia = request.form["equivalencia"]
     
-    print(request.form)
-    print(servicio_activo)
-    print(request.files)
     categoria = request.form["categoria"]
-
+    # Guardamos la persona para, en caso de error, volver a recuperar sus datos en el formulario
+    persona_validar=Admitido(nombre,apellidos,dni,gender,cp,nacimiento,telefono,email,10,servicio_activo,grado,categoria,equivalencia)
+    
+    #PRIMERA VALIDACIÓN, QUE NO ESTÉ REPETIDO EL CP
+    try:
+        with sqlite3.connect("/Users/carlosvillarino/Desktop/Rufo/new-repository/data/admision.db") as con:
+            cur = con.cursor()
+            query = "SELECT nombre FROM admision_2023 where CP="+cp
+            cur.execute(query)
+            cp_BD = cur.fetchall()
+            print(cp_BD)
+            if len(cp_BD)!=0:
+                errorForm.append("La persona que está intentando dar de alta ya está registrada")
+                for item in errorForm:
+                    flash(item)
+                return render_template("form.html",persona_validar=persona_validar)
+    except Exception as e:
+        print(e)
+        return "Error al intentar validar el CP"
+    
     # TODO validar variables
     # edad < 60
     try:
@@ -92,7 +110,9 @@ def intro_form():
         error = 'Invalid gender'
         errorForm.append("Tiene que seleccionar un género")
 
-    # TODO: equivalencia == si
+    # Equivalencia
+    if equivalencia != "si":
+         errorForm.append("Necesita tener una equivalencia para poder matricularse.")
     
     # grado  == no
     if grado != "no":
@@ -132,34 +152,30 @@ def intro_form():
 
     foto.save(os.path.join(app.config['UPLOAD_FOLDER2'], cp+"_"+foto.filename))
     
-    # ESCRIBIRLO EN LA BD
-    try:
-        with sqlite3.connect("/var/admision/admision.db") as con:
-            cur = con.cursor()
-            cur.execute("INSERT INTO admision_2023 (nombre,apellidos,DNI,CP,fecha_nacimiento,telefono,email,escalafon,situacion_servicio,grado,categoria_profesional,equivalencia_titulo,gender) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",(nombre,apellidos,dni,cp,nacimiento,telefono,email,10,servicio_activo,grado,categoria,equivalencia,gender) )
-            con.commit()
-    except Exception as e:
-        print(e)
-        con.rollback()
-        errorForm.append("Error del servidor, pruebe más tarde.")
-    
-    
     # REPORTAR OK
     if not errorForm:
+         # ESCRIBIRLO EN LA BD
+        try:
+            with sqlite3.connect("/Users/carlosvillarino/Desktop/Rufo/new-repository/data/admision.db") as con:
+                cur = con.cursor()
+                cur.execute("INSERT INTO admision_2023 (nombre,apellidos,DNI,CP,fecha_nacimiento,telefono,email,escalafon,situacion_servicio,grado,categoria_profesional,equivalencia_titulo,gender) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",(nombre,apellidos,dni,cp,nacimiento,telefono,email,10,servicio_activo,grado,categoria,equivalencia,gender) )
+                con.commit()
+        except Exception as e:
+            print(e)
+            con.rollback()
+            errorForm.append("Error del servidor, pruebe más tarde.")
+        
         return render_template("formExito.html")
     else:
         for item in errorForm:
             flash(item)
-        return render_template("form.html")
-
-
-
+        return render_template("form.html",persona_validar=persona_validar)
 
 @app.route("/consulta", endpoint='consulta')
 def dump_db():
     if 'username' in session:
         try:
-            with sqlite3.connect("/var/admision/admision.db") as con:
+            with sqlite3.connect("/Users/carlosvillarino/Desktop/Rufo/new-repository/data/admision.db") as con:
                 cur = con.cursor()
                 
                 cur.execute("SELECT * FROM admision_2023 ORDER BY escalafon DESC;")
@@ -221,3 +237,88 @@ def logout():
 def confirmLogout():
     session.pop('username', None)
     return render_template('home.html')
+
+@app.route('/detalles/<int:item_CP>', endpoint='detalles')
+def detalles(item_CP):
+    if 'username' in session:
+        try:
+            with sqlite3.connect("/Users/carlosvillarino/Desktop/Rufo/new-repository/data/admision.db") as con:
+                cur = con.cursor()
+                query = "SELECT nombre, apellidos, DNI, gender, CP, fecha_nacimiento, telefono, email, escalafon, situacion_servicio, grado, categoria_profesional, equivalencia_titulo FROM admision_2023 where CP="+str(item_CP)
+                cur.execute(query)
+                result = cur.fetchall()
+                
+                search_string = str(item_CP)
+                image_search = find_matching_files_foto(search_string)
+                titulo_search = find_matching_files_titulo(search_string)
+                for item in image_search:
+                    image_name = item
+                for item in titulo_search:
+                    titulo_name = item
+                print(image_name)
+                print(result)
+                for row in result:
+                    admitido = Admitido(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12])
+            return render_template('detalle.html',admitido=admitido,image_name=image_name,titulo_name=titulo_name)
+        except Exception as e:
+            print(e)
+            return "Error1"
+    else:
+        return render_template('login.html')
+    
+def find_matching_files_foto(search_string):
+    matching_files = []
+
+    # Get the current directory of the Flask app
+    app_root = os.path.dirname(os.path.abspath(__file__))
+    
+    # Define the path to the static/images directory
+    images_path = os.path.join(app_root, 'static', 'fotos')
+
+    # Check if the path exists
+    if os.path.exists(images_path):
+        # Iterate through files in the static/images directory
+        for root, dirs, files in os.walk(images_path):
+            for file in files:
+                if search_string in file:
+                    # Add the file name to the list if it contains the search string
+                    matching_files.append(file)
+    else:
+        print(f"The path {images_path} does not exist.")
+
+    return matching_files
+def find_matching_files_titulo(search_string):
+    matching_files = []
+
+    # Get the current directory of the Flask app
+    app_root = os.path.dirname(os.path.abspath(__file__))
+    
+    # Define the path to the static/images directory
+    images_path = os.path.join(app_root, 'static', 'titulos')
+
+    # Check if the path exists
+    if os.path.exists(images_path):
+        # Iterate through files in the static/images directory
+        for root, dirs, files in os.walk(images_path):
+            for file in files:
+                if search_string in file:
+                    # Add the file name to the list if it contains the search string
+                    matching_files.append(file)
+    else:
+        print(f"The path {images_path} does not exist.")
+
+    return matching_files
+
+@app.route('/download_file', methods=['POST'])
+def download_file():
+    dynamic_filename = request.form.get('dynamic_filename')
+
+    # Assuming the file is located in the static folder
+    file_path = os.path.join(app.root_path, 'static', 'titulos', dynamic_filename)
+    
+    # Check if the file exists
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        return render_template('file_not_found.html', filename=dynamic_filename)
+

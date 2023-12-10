@@ -6,6 +6,7 @@
     <title>Login</title>
 </head>
 <body>
+    <div id="sombra" class="sombra"></div>
     <h1>Login</h1>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -20,7 +21,8 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form method="post" action="/login">
+    <form method="post" action="/login" style="width:70%">
+        <div class="content1">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <br>
@@ -28,6 +30,34 @@
         <input type="password" id="password" name="password" required>
         <br>
         <input type="submit" value="Login">
+        </div>
     </form>
 </body>
 </html>
+<style>
+    body {
+        /* Set background image properties */
+        background-image: url('/static/images/8.jpg'); /* Replace with the path to your image */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh; 
+        margin: 0; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #ffffff;
+    }
+    .content1 {
+        background-color: white;
+        color: black;
+    }
+    .sombra {
+        background: url('/static/images/fondo.png') no-repeat center top;
+        left: -1vh;
+        position: absolute;
+        width: 97px;
+        height: 797px;
+        margin-top: 100px;
+    }
+</style>

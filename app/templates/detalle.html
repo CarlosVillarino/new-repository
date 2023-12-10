@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación</title>
+</head>
+<body>
+        <img src="{{ url_for('static', filename='fotos/' + image_name) }}" alt="Dynamic Image">
+        <div id="sombra" class="sombra"></div>
+            <h1>Datos de pre-admisión</h1>
+            <div class="content1" style="text-align:left;">
+            Nombre: {{admitido.nombre}}</br>
+            Apellidos: {{admitido.apellidos}}</br>
+            DNI: {{admitido.DNI}}</br>
+            Género: {{admitido.gender}}</br>
+            CP: {{admitido.CP}}</br>
+            Fecha de nacimiento: {{admitido.fecha_nacimiento}}</br>
+            Teléfono: {{admitido.telefono}}</br>
+            Correo electrónico: {{admitido.email}}</br>
+            {%if admitido.escalafon==10%}
+                <form action="modEscalafon" method = "POST">
+                    Establezca el Escalafón: <input id="escalafon" name="escalafon" type="text">
+                    <input type="submit" value="Actualizar Escalafón" onclick="return comprobarEscalafon()">
+                </form>
+            {%else%}
+                Escalafón: {{admitido.escalafon}}</br>
+            {%endif%}
+            Situación servicio: {{admitido.situacion_servicio}}</br>
+            Grado: {{admitido.grado}}</br>
+            Rango: {{admitido.categoria_profesional}}</br>
+            Adjuntada equivalencia título: {{admitido.equivalencia_titulo}}</br>
+            <form action="{{ url_for('download_file') }}" method="post">
+                <!-- Add a hidden input field for the dynamically generated filename -->
+                <input type="hidden" name="dynamic_filename" value="{{ titulo_name }}">
+                <button type="submit">Descargar equivalencia</button>
+            </form>
+        </div>
+    
+    <button onclick="closeWind()">Cerrar</button>
+</body>
+<script>
+    function closeWind() {
+        close();
+    }
+    function comprobarEscalafon() {
+        if (document.getElementById("escalafon").value == ""){
+            alert("Debe introducir un valor válido para actualizar escalafón")
+            return false;
+        }
+    }
+</script>
+
+</html>
+
+<style>
+    body {
+        /* Set background image properties */
+        background-image: url('/static/images/8.jpg'); /* Replace with the path to your image */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh; 
+        margin: 0; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+    }
+    .content1 {
+        background-color: white;
+        color: black;
+        width: 50%;
+        text-align: center;
+    }
+    .sombra {
+        background: url('/static/images/fondo.png') no-repeat center top;
+        left: -1vh;
+        position: absolute;
+        width: 97px;
+        height: 797px;
+        margin-top: 100px;
+    }
+</style>

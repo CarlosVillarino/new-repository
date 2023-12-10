@@ -4,7 +4,9 @@
       <title>Introducir datos</title>
   </head>
   <body>
+    <div id="sombra" class="sombra"></div>
     <script src="../static/js/formFunctions.js"></script>
+    
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul style="color:red">
@@ -14,217 +16,246 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <form action="intro" method = "POST" enctype="multipart/form-data">
-      <p><a href="/logout">Cerrar sesion</a></p>
-        <fieldset>
-        <legend>Datos personales</legend>
-        <!--Nombre-->
-        <div class="form-group" style="display: inline-block;">
-          <label class="control-label" for="nombre">Nombre</label>  
-          <div  >
-          <input id="nombre" name="nombre" type="text" placeholder="" class="form-control input-md" required="">
-          </div>
-        </div>
-        
-        <!--Apellidos-->
-        <div class="form-group" style="display: inline-block;">
-          <label class="control-label" for="apellidos">Apellidos</label>  
-          <div  >
-          <input id="apellidos" name="apellidos" type="text" placeholder="" class="form-control input-md" required="" style="width: 150%;">
-            
-          </div>
-        </div>
-        
-        <!--DNI-->
-        <div class="form-group" style="margin-bottom: 10px;">
-          <label class="control-label" for="dni">DNI</label>  
-          <div>
-          <input id="dni" name="dni" type="text" placeholder="" class="form-control input-md" required="" pattern="^[0-9]{8}[A-Z]$">
-          <span class="help-block">Formato: 12345678X</span>  
-          </div>
-        </div>
-
-
-        <!--Fecha de nacimiento-->
-        <div class="form-group">
-          <label for="start">Fecha de nacimiento:</label>           
-          <input type="date" id="nacimiento" name="nacimiento" min="1950-01-01"  class="form-control input-md" required="">
-          </div>
-
-        <!-- Telefono -->
-        <div class="form-group">
-          <label class="control-label" for="telefono">Telefono</label>  
-          <div>
-          <input id="telefono" name="telefono" type="text" placeholder="" class="form-control input-md" required="" pattern="^[0-9]*$">
-          <span id="telefonoWarning" class="help-block" style="display: none;">Solo números permitidos.</span>  
-          </div>
-        </div>
-
-        <!--Dirección de correo-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="email">Email</label>  
-          <div class="col-md-4">
-          <input id="email" name="email" type="text" placeholder="" class="form-control input-md" required="">
-            
-          </div>
-        </div>
-        <!-- Confirm Email -->
-        <div class="form-group" style="margin-bottom: 10px;">
-          <label class="control-label" for="confirmEmail">Confirmar Email</label>  
-          <div>
-          <input id="confirmEmail" name="confirmEmail" type="text" placeholder="" class="form-control input-md" required="">
-          <span id="emailWarning" class="help-block" style="display: none;color: red;">❌</span>  
-          <span id="emailSuccess" class="help-block" style="display: none; color: green;">✅</span>
-
-        </div>
-        </div>
-
-        <!--Género-->
-        <label for="gender">Género</label>
-        <select id="gender" name="gender">
-          <option value="Hombre">Hombre</option>
-          <option value="Mujer">Mujer</option>
-        </select>
-
-        <!--Circunstancias excepcionales-->
-        <div class="form-group" style="margin-top: 10px;">
-          <label>Circunstancias excepcionales:</label>
-            <div id="circunstancias">
-              <div class="option">
-                <input type="checkbox" id="opcion1" name="circunstancias" value="opcion1" onchange="showInput(this)">
-                <label for="opcion1">Víctima del terrorismo</label>
-                <input type="file" id="file1" style="display: none;" onchange="showTick(this)">
-                <span id="tick1" style="display: none;">&#10004;</span>
-              </div>
-              <div class="option">
-                <input type="checkbox" id="opcion2" name="circunstancias" value="opcion2" onchange="showInput(this)">
-                <label for="opcion2">Familia Numerosa</label>
-                <input type="file" id="file2" style="display: none;" onchange="showTick(this)">
-                <span id="tick2" style="display: none;">&#10004;</span>
-              </div>
-              <div class="option">
-                <input type="checkbox" id="opcion3" name="circunstancias" value="opcion3" onchange="showInput(this)">
-                <label for="opcion3">Víctima de Violencia de Género</label>
-                <input type="file" id="file3" style="display: none;" onchange="showTick(this)">
-                <span id="tick3" style="display: none;">&#10004;</span>
-              </div>
-              <div class="option">
-                <input type="checkbox" id="opcion4" name="circunstancias" value="opcion4" onchange="showInput(this)">
-                <label for="opcion4">Estudiante con discapacidad</label>
-                <input type="file" id="file4" style="display: none;" onchange="showTick(this)">
-                <span id="tick4" style="display: none;">&#10004;</span>
-              </div>
-              <div class="option">
-                <input type="checkbox" id="opcion5" name="circunstancias" value="opcion5" onchange="showInput(this)">
-                <label for="opcion5">Supuestos del artículo 12.2 31/2022</label>
-                <input type="file" id="file5" style="display: none;" onchange="showTick(this)">
-                <span id="tick5" style="display: none;">&#10004;</span>
-              </div>
-            </div>
-          </div>
-          </fieldset>
-        <!--Aqui empieza la caja de policiales-->
+    <form action="intro" method = "POST" enctype="multipart/form-data" style="width:70%">
+      <div class="content1">
+        <p><a href="/logout">Cerrar sesion</a></p>
           <fieldset>
-            <legend>Datos Policiales</legend>
-
-            <!--Carnet Profesional-->
-            <div class="form-group">
-              <label class="control-label" for="cp">Carnet Profesional</label>  
-              <div  >
-              <input id="cp" name="cp" type="text" placeholder="" class="form-control input-md" required="">
-                
-              </div>
+          <legend>Datos personales</legend>
+          <!--Nombre-->
+          <div class="form-group" style="display: inline-block;">
+            <label class="control-label" for="nombre">Nombre</label>  
+            <div  >
+            <input id="nombre" name="nombre" type="text" placeholder="" class="form-control input-md" required="" value="{{persona_validar.nombre}}">
             </div>
+          </div>
           
-            <!--Estado de servicio -->
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="servicio_activo">Servicio activo</label>
-              <div class="col-md-4">
-                <select id="servicio_activo" name="servicio_activo" class="form-control">
-                  <option value="activo">Activo</option>
-                  <option value="servicios especiales">Servicios especiales</option>
-                  <option value="excedencia">Excedencia</option>
-                  <option value="otro">Otra</option>
-                </select>
+          <!--Apellidos-->
+          <div class="form-group" style="display: inline-block;">
+            <label class="control-label" for="apellidos">Apellidos</label>  
+            <div  >
+            <input id="apellidos" name="apellidos" type="text" placeholder="" class="form-control input-md" required="" style="width: 150%;" value="{{persona_validar.apellidos}}">
+              
+            </div>
+          </div>
+          
+          <!--DNI-->
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="control-label" for="dni">DNI</label>  
+            <div>
+            <input id="dni" name="dni" type="text" placeholder="" class="form-control input-md" required="" pattern="^[0-9]{8}[A-Z]$" value="{{persona_validar.DNI}}">
+            <span class="help-block">Formato: 12345678X</span>  
+            </div>
+          </div>
+
+
+          <!--Fecha de nacimiento-->
+          <div class="form-group">
+            <label for="start">Fecha de nacimiento:</label>           
+            <input type="date" id="nacimiento" name="nacimiento" min="1950-01-01"  class="form-control input-md" required="" value="{{persona_validar.fecha_nacimiento}}">
+            </div>
+
+          <!-- Telefono -->
+          <div class="form-group">
+            <label class="control-label" for="telefono">Telefono</label>  
+            <div>
+            <input id="telefono" name="telefono" type="text" placeholder="" class="form-control input-md" required="" pattern="^[0-9]*$" onchange="comprobarTlf()" value="{{persona_validar.telefono}}">
+            <span id="telefonoWarning" class="help-block" style="display: none;">Solo números permitidos.</span>  
+            </div>
+          </div>
+
+          <!--Dirección de correo-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="email">Email</label>  
+            <div class="col-md-4">
+            <input id="email" name="email" type="text" placeholder="" class="form-control input-md" required="" onchange="checkEmails()" value="{{persona_validar.email}}">
+              
+            </div>
+          </div>
+          <!-- Confirm Email -->
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="control-label" for="confirmEmail">Confirmar Email</label>  
+            <div>
+            <input id="confirmEmail" name="confirmEmail" type="text" placeholder="" class="form-control input-md" required="" onchange="checkEmails()" value="{{persona_validar.email}}">
+            <span id="emailWarning" class="help-block" style="display: none;color: red;">❌</span>  
+            <span id="emailSuccess" class="help-block" style="display: none; color: green;">✅</span>
+
+          </div>
+          </div>
+
+          <!--Género-->
+          <label for="gender">Género</label>
+          <select id="gender" name="gender" value="{{persona_validar.gender}}">
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+          </select>
+
+          <!--Circunstancias excepcionales-->
+          <div class="form-group" style="margin-top: 10px;">
+            <label>Circunstancias excepcionales:</label>
+              <div id="circunstancias">
+                <div class="option">
+                  <input type="checkbox" id="opcion1" name="circunstancias" value="opcion1" onchange="showInput(this)">
+                  <label for="opcion1">Víctima del terrorismo</label>
+                  <input type="file" id="file1" style="display: none;" onchange="showTick(this)">
+                  <span id="tick1" style="display: none;">&#10004;</span>
+                </div>
+                <div class="option">
+                  <input type="checkbox" id="opcion2" name="circunstancias" value="opcion2" onchange="showInput(this)">
+                  <label for="opcion2">Familia Numerosa</label>
+                  <input type="file" id="file2" style="display: none;" onchange="showTick(this)">
+                  <span id="tick2" style="display: none;">&#10004;</span>
+                </div>
+                <div class="option">
+                  <input type="checkbox" id="opcion3" name="circunstancias" value="opcion3" onchange="showInput(this)">
+                  <label for="opcion3">Víctima de Violencia de Género</label>
+                  <input type="file" id="file3" style="display: none;" onchange="showTick(this)">
+                  <span id="tick3" style="display: none;">&#10004;</span>
+                </div>
+                <div class="option">
+                  <input type="checkbox" id="opcion4" name="circunstancias" value="opcion4" onchange="showInput(this)">
+                  <label for="opcion4">Estudiante con discapacidad</label>
+                  <input type="file" id="file4" style="display: none;" onchange="showTick(this)">
+                  <span id="tick4" style="display: none;">&#10004;</span>
+                </div>
+                <div class="option">
+                  <input type="checkbox" id="opcion5" name="circunstancias" value="opcion5" onchange="showInput(this)">
+                  <label for="opcion5">Supuestos del artículo 12.2 31/2022</label>
+                  <input type="file" id="file5" style="display: none;" onchange="showTick(this)">
+                  <span id="tick5" style="display: none;">&#10004;</span>
+                </div>
               </div>
             </div>
+            </fieldset>
+          <!--Aqui empieza la caja de policiales-->
+            <fieldset>
+              <legend>Datos Policiales</legend>
+
+              <!--Carnet Profesional-->
+              <div class="form-group">
+                <label class="control-label" for="cp">Carnet Profesional</label>  
+                <div  >
+                <input id="cp" name="cp" type="text" placeholder="" class="form-control input-md" required="" value="{{persona_validar.CP}}">
+                  
+                </div>
+              </div>
             
-            <!-- Grado universitario -->
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="grado">Tienes un Grado</label>
-              <div class="col-md-4">
-              <div class="radio">
-                <label for="grado-0">
-                  <input type="radio" name="grado" id="grado-0" value="si" checked="checked">
-                  Si
-                </label>
-                </div>
-              <div class="radio">
-                <label for="grado-1">
-                  <input type="radio" name="grado" id="grado-1" value="no">
-                  No
-                </label>
+              <!--Estado de servicio -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="servicio_activo">Servicio activo</label>
+                <div class="col-md-4">
+                  <select id="servicio_activo" name="servicio_activo" class="form-control" value="{{persona_validar.situacion_servicio}}">
+                    <option value="activo">Activo</option>
+                    <option value="servicios especiales">Servicios especiales</option>
+                    <option value="excedencia">Excedencia</option>
+                    <option value="otro">Otra</option>
+                  </select>
                 </div>
               </div>
-            </div>
-            
-            <!-- Equivalencia con FP Superior -->
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="equivalencia">Tiene la equivalencia de FP Superior</label>
-              <div class="col-md-4">
-              <div class="radio">
-                <label for="equivalencia-0">
-                  <input type="radio" name="equivalencia" id="equivalencia-0" value="si" checked="checked">
-                  Si
-                </label>
-                </div>
-              <div class="radio">
-                <label for="equivalencia-1">
-                  <input type="radio" name="equivalencia" id="equivalencia-1" value="no">
-                  No
-                </label>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Subir PDF con titulo o Equivalencia --> 
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="titulo">Titulo o equivalencia</label>
-              <div class="col-md-4">
-                <input id="titulo" name="titulo" class="input-file" type="file">
-              </div>
-            </div>
-            
-            <!-- Categoría profesional -->
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="categoria">Categoria profesional</label>
-              <div class="col-md-4">
-              <div class="radio">
-                <label for="categoria-0">
-                  <input type="radio" name="categoria" id="categoria-0" value="policia" checked="checked">
-                  Policia
-                </label>
-                </div>
-              <div class="radio">
-                <label for="categoria-1">
-                  <input type="radio" name="categoria" id="categoria-1" value="oficial">
-                  Oficial
-                </label>
+              
+              <!-- Grado universitario -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="grado">Tienes un Grado</label>
+                <div class="col-md-4">
+                <div class="radio">
+                  <label for="grado-0">
+                    <input type="radio" name="grado" id="grado-0" value="si" checked="checked">
+                    Si
+                  </label>
+                  </div>
+                <div class="radio">
+                  <label for="grado-1">
+                    <input type="radio" name="grado" id="grado-1" value="no">
+                    No
+                  </label>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <!-- Boton para subir fotografía --> 
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="fotografia">Fotografia</label>
-              <div id="fotoId" class="col-md-4">
-                <input id="fotografia" name="fotografia" class="input-file" type="file" style="display: none;" onchange="nombreDocumento()">
-                <button id="uploadButton" class="btn btn-default" onclick="actualizarFoto()">Seleccione Fotografía</button>
+              
+              <!-- Equivalencia con FP Superior -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="equivalencia">Tiene la equivalencia de FP Superior</label>
+                <div class="col-md-4">
+                <div class="radio">
+                  <label for="equivalencia-0">
+                    <input type="radio" name="equivalencia" id="equivalencia-0" value="si" checked="checked">
+                    Si
+                  </label>
+                  </div>
+                <div class="radio">
+                  <label for="equivalencia-1">
+                    <input type="radio" name="equivalencia" id="equivalencia-1" value="no">
+                    No
+                  </label>
+                  </div>
+                </div>
               </div>
-            </div>
-          </fieldset> 
-          <!--Boton para enviar formulario-->
-          <input type="submit" value="Enviar" onclick="comprobarCampos()">
+              
+              <!-- Subir PDF con titulo o Equivalencia --> 
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="titulo">Titulo o equivalencia</label>
+                <div class="col-md-4">
+                  <input id="titulo" name="titulo" class="input-file" type="file">
+                </div>
+              </div>
+              
+              <!-- Categoría profesional -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="categoria">Categoria profesional</label>
+                <div class="col-md-4">
+                <div class="radio">
+                  <label for="categoria-0">
+                    <input type="radio" name="categoria" id="categoria-0" value="policia" checked="checked">
+                    Policia
+                  </label>
+                  </div>
+                <div class="radio">
+                  <label for="categoria-1">
+                    <input type="radio" name="categoria" id="categoria-1" value="oficial">
+                    Oficial
+                  </label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Boton para subir fotografía --> 
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="fotografia">Fotografia</label>
+                <div id="fotoId" class="col-md-4">
+                  <input id="fotografia" name="fotografia" class="input-file" type="file" style="display: none;" onchange="nombreDocumento()">
+                  <button id="uploadButton" class="btn btn-default" onclick="actualizarFoto()">Seleccione Fotografía</button>
+                </div>
+              </div>
+            </fieldset> 
+            <!--Boton para enviar formulario-->
+            <input type="submit" value="Enviar" onclick="return comprobarCampos()">
+          </div>
     </form>
   </body>
 </html>
+<style>
+  body {
+      /* Set background image properties */
+      background-image: url('/static/images/8.jpg'); /* Replace with the path to your image */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh; 
+      margin: 0; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #ffffff;
+  }
+  .content1 {
+      background-color: white;
+      color: black;
+  }
+  .sombra {
+    background: url('/static/images/fondo.png') no-repeat center top;
+    left: -1vh;
+    position: absolute;
+    width: 97px;
+    height: 797px;
+    margin-top: 100px;
+}
+</style>
